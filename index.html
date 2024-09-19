@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Оценка проекта</title>
+  <style>
+    .scoring-container {
+      display: flex;
+      justify-content: flex-start; 
+      align-items: flex-start;
+      max-width: 1300px;
+      margin: auto;
+      padding: 20px;
+      background-color: #f4f4f4;
+      border-radius: 8px;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .scoring-section {
+      flex: 1;
+      padding-right: 20px;
+    }
+
+    .result-section {
+      flex: 0 1 35%;
+      padding-left: 20px;
+      border-left: 1px solid #ccc;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      height: 100%;
+    }
+
+    .scoring-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .scoring-item-label {
+      flex: 1;
+      font-weight: bold;
+      margin-right: 10px;
+      text-align: left;
+    }
+
+    .scoring-item-select {
+      flex: 2; 
+      display: flex;
+      align-items: center;
+    }
+
+    .scoring-item input,
+    .scoring-item select {
+      width: 100%; 
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .score {
+      width: 50px;
+      height: 40px; 
+      text-align: center;
+      font-weight: bold;
+      color: #333;
+      margin-left: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      background-color: #ffffff;
+    }
+
+    .result-wrapper {
+      border: 2px solid #4CAF50;
+      padding: 20px;
+      border-radius: 8px;
+      background-color: #e8f5e9;
+      text-align: center;
+      height: 330px; 
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      visibility: hidden; 
+    }
+
+    #totalScore {
+      font-size: 4.8em;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    #recommendation {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+
+    .reset-button,
+    .save-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .reset-button:hover,
+    .save-button:hover {
+      background-color: #45a049; 
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+
+    .delete-button {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .delete-button:hover {
+      background-color: #ff1a1a;
+    }
+  </style>
+</head>
+<body>
+  <div class="scoring-container">
+    <div class="scoring-section">
+      <!-- Поле для ввода названия идеи -->
+      <div class="scoring-item">
+        <div class="scoring-item-label">Название идеи</div>
+        <div class="scoring-item-select">
+          <input type="text" id="ideaName" placeholder="Введите название идеи">
+        </div>
+      </div>
+
+      <!-- Секция с критериями и вариантами ответов -->
+      <div class="scoring-item">
+        <div class="scoring-item-label">Вовлечение других подразделений</div>
+        <div class="scoring-item-select">
+          <select onchange="updateScore(this)">
+            <option value="">Выберите</option>
+            <option value="0">Можем реализовать силами своей Дирекции / проектной группы / отделения</option>
+            <option value="1">Требуется вовлечение других Дирекций внутри Центра</option>
+            <option value="4">Требуется вовлечение других Центров внутри Блока</option>
+            <option value="7">Требуется вовлечение других Блоков</option>
+            <option value="10">Требуется вовлечение всего Банка</option>
+          </select>
+        </div>
+        <div class="score">0</div>
+      </div>
+
+      <div class="scoring-item">
+        <div class="scoring-item-label">Срок реализации</div>
+        <div class="scoring-item-select">
+          <select id="realizationTime" onchange="updateScore(this)">
+            <option value="1">Быстро (до 3 месяцев)</option>
+            <option value="4">Средне (3–6 месяцев)</option>
+            <option value="7">Долго (6–12 месяцев)</option>
+            <option value="10">Очень долго (более 12 месяцев)</option>
+          </select>
+        </div>
+        <div class="score">0</div>
+      </div>
+
+      <div class="scoring-item">
+        <div class="scoring-item-label">Срок достижения эффекта</div>
+        <div class="scoring-item-select">
+          <select id="effectTime" onchange="updateScore(this)">
+            <option value="1">Быстро (до 3 месяцев)</option>
+            <option value="4">Средне (3–6 месяцев)</option>
+            <option value="7">Долго (6–12 месяцев)</option>
+            <option value="10">Очень долго (более 12 месяцев)</option>
+          </select>
+        </div>
+        <div class="score">0</div>
+      </div>
+
+      <div class="scoring-item">
+        <div class="scoring-item-label">Бюджет</div>
+        <div class="scoring-item-select">
+          <select onchange="updateScore(this)">
+            <option value="">Выберите</option>
+            <option value="1">Бесплатно</option>
+            <option value="4">В рамках бюджета Дирекции / Центра</option>
+            <option value="7">Необходимо привлечение бюджетов нескольких Центров</option>
+            <option value="10">Необходимо привлечение бюджетов нескольких Блоков</option>
+          </select>
+        </div>
+        <div class="score">0</div>
+      </div>
+
+      <div class="scoring-item">
+        <div class="scoring-item-label">Необходимые IT-ресурсы</div>
+        <div class="scoring-item-select">
+          <select onchange="updateScore(this)">
+            <option value="">Выберите</option>
+            <option value="1">Достаточно имеющихся IT-ресурсов</option>
+            <option value="4">Небольшая доработка силами Банка</option>
+            <option value="10">Большие закупки оборудования и/или ПО</option>
+          </select>
+        </div>
+        <div class="score">0</div>
+      </div>
+
+      <div class="scoring-item">
+        <div class="scoring-item-label">Эффект</div>
+        <div class="scoring-item-select">
+          <select onchange="updateScore(this)">
+            <option value="">Выберите</option>
+            <option value="1">Очень большой эффект</option>
+            <option value="4">Большой эффект</option>
+            <option value="7">Средний эффект</option>
+            <option value="10">Малый эффект</option>
+          </select>
+        </div>
+        <div class="score">0</div>
+      </div>
+
+      <button class="reset-button" onclick="resetForm()">Обновить</button>
+    </div>
+
+    <!-- Секция с результатами -->
+    <div class="result-section">
+      <div class="result-wrapper">
+        <div id="totalScore">Итого: 0</div>
+        <div id="recommendation"></div>
+      </div>
+      <button class="save-button" onclick="saveIdea()">Сохранить</button>
+    </div>
+  </div>
+
+  <!-- Таблица для сохраненных данных -->
+  <table id="ideasTable">
+    <thead>
+      <tr>
+        <th>№</th>
+        <th>Идея</th>
+        <th>Балл</th>
+        <th>Куда</th>
+        <th>Срок реализации</th>
+        <th>Срок достижения эффекта</th>
+        <th>Дата</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    let editIndex = -1;
+
+    document.addEventListener('DOMContentLoaded', loadIdeas);
+
+    function updateScore(select) {
+      const scoreDisplay = select.parentNode.nextElementSibling;
+      scoreDisplay.innerText = select.value ? select.value : '0';
+      calculateScore();
+    }
+
+    function calculateScore() {
+      const selects = document.querySelectorAll(".scoring-item select");
+      let totalScore = 0;
+      let allFilled = true;
+
+      selects.forEach(select => {
+        if (select.value === "") {
+          allFilled = false;
+        } else {
+          totalScore += parseInt(select.value);
+        }
+      });
+
+      if (allFilled) {
+        document.querySelector(".result-wrapper").style.visibility = 'visible';
+        document.getElementById("totalScore").innerText = 'Итого: ' + totalScore;
+
+        let recommendation = '';
+        if (totalScore <= 5) {
+          recommendation = 'Взять в работу';
+        } else if (totalScore < 21) {
+          recommendation = 'В бэклог Дирекции';
+        } else if (totalScore < 41) {
+          recommendation = 'Передать в бэклог Комитета инноваций';
+        } else {
+          recommendation = 'Доработать идею';
+        }
+
+        document.getElementById("recommendation").innerText = recommendation;
+      } else {
+        document.querySelector(".result-wrapper").style.visibility = 'hidden';
+      }
+    }
+
+    function saveIdea() {
+      const ideaName = document.getElementById("ideaName").value;
+      const totalScore = document.getElementById("totalScore").innerText.replace("Итого: ", "");
+      const recommendation = document.getElementById("recommendation").innerText;
+      const realizationTime = mapRealizationTime(document.getElementById("realizationTime").value);
+      const effectTime = mapEffectTime(document.getElementById("effectTime").value);
+      const currentDate = new Date().toLocaleString();
+
+      if (ideaName && totalScore && realizationTime && effectTime) {
+        let ideas = JSON.parse(localStorage.getItem('ideas')) || [];
+        const newIdea = { ideaName, totalScore, recommendation, realizationTime, effectTime, currentDate };
+
+        ideas.push(newIdea);
+
+        localStorage.setItem('ideas', JSON.stringify(ideas));
+        loadIdeas();
+        resetForm();
+      } else {
+        alert("Заполните все поля");
+      }
+    }
+
+    function loadIdeas() {
+      const ideas = JSON.parse(localStorage.getItem('ideas')) || [];
+      const tableBody = document.getElementById("ideasTable").querySelector("tbody");
+      tableBody.innerHTML = '';
+
+      ideas.forEach((idea, index) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${idea.ideaName}</td>
+          <td>${idea.totalScore}</td>
+          <td>${idea.recommendation}</td>
+          <td>${idea.realizationTime}</td>
+          <td>${idea.effectTime}</td>
+          <td>${idea.currentDate}</td>
+          <td><button class="delete-button" onclick="deleteIdea(${index})">Удалить</button></td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    }
+
+    function deleteIdea(index) {
+      let ideas = JSON.parse(localStorage.getItem('ideas')) || [];
+      ideas.splice(index, 1);
+      localStorage.setItem('ideas', JSON.stringify(ideas));
+      loadIdeas();
+    }
+
+    function resetForm() {
+      document.getElementById("ideaName").value = "";
+      const selects = document.querySelectorAll(".scoring-item select");
+      selects.forEach(select => select.value = "");
+      const scores = document.querySelectorAll(".score");
+      scores.forEach(score => score.innerText = "0");
+      document.querySelector(".result-wrapper").style.visibility = 'hidden';
+    }
+
+    function mapRealizationTime(value) {
+      switch (value) {
+        case '1': return 'до 3 месяцев';
+        case '4': return '3–6 месяцев';
+        case '7': return '6–12 месяцев';
+        case '10': return 'более 12 месяцев';
+        default: return '';
+      }
+    }
+
+    function mapEffectTime(value) {
+      switch (value) {
+        case '1': return 'до 3 месяцев';
+        case '4': return '3–6 месяцев';
+        case '7': return '6–12 месяцев';
+        case '10': return 'более 12 месяцев';
+        default: return '';
+      }
+    }
+  </script>
+</body>
+</html>
